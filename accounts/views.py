@@ -2,6 +2,8 @@ from django.shortcuts import render, redirect
 from django.contrib import messages, auth
 from django.contrib.auth.models import User 
 from contacts.models import Contact
+import logging
+log = logging.getLogger(__name__)
 # Create your views here.
 
 def register(request):
@@ -23,7 +25,7 @@ def register(request):
           
                else:
                     if User.objects.filter(email=email).exists():
-                         messages.error(request,'email is being used')
+                         logging.info(messages.error(request,'email is being used'))
                          return redirect('register')
                     else:
                          user = User.objects.create_user(username=username, password=password,
@@ -40,6 +42,7 @@ def register(request):
                return redirect('register')
      else:
           return render(request, 'accounts/register.html')
+     
 
 
 
@@ -52,18 +55,19 @@ def login(request):
 
           if user is not None:
                auth.login(request ,user)
-               messages.success(request, ' you are now logged in')
+               logging.info (messages.success(request, ' you are now logged in'))
                return redirect('dashboard')
           else:
-               messages.error(request, 'Invalid credentials')
+               logging.info(messages.error(request, 'Invalid credentials'))
                return redirect('login')
      else:
           return render(request, 'accounts\login.html')
+     
 
 def logout(request):
      if request.method == 'POST':
           auth.logout(request)
-          messages.success(request, 'You are now logged out')
+          logging.info(messages.success(request, 'You are now logged out'))
           return redirect('index')
      else:
           return render(request, 'accounts\logout.html')

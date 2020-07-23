@@ -4,16 +4,20 @@ from django.core.paginator import EmptyPage, PageNotAnInteger,Paginator
 from .choices import prices_choices, bedroooms_choices, state_choices
 
 from .models import Listings
+import logging
+log = logging.getLogger(__name__)
 
 def index(request):
     listings = Listings.objects.order_by('-list_date').filter(is_publish= True)
     paginator = Paginator(listings, 6 )
     page = request.GET.get('page')
     paged_listings = paginator.get_page(page)
+    log.debug('este es un mensaje, ojala aparesca')
 
     context = {
         'listings': paged_listings
     }
+    log.info('se envia el contexto a la pagina', context)
 
     return render(request, 'listings\listings.html', context)
 
