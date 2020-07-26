@@ -3,8 +3,22 @@ from django.contrib import messages, auth
 from django.contrib.auth.models import User 
 from contacts.models import Contact
 import logging
-log = logging.getLogger(__name__)
+logger = logging.getLogger(__name__)
+#logger.setLevel(logging.WARNING)
+#file_handler_1 = logging.FileHandler('btre/logs/handler_request.log')
+#file_handler_2 = logging.FileHandler('btre/logs/filess_2.log')
+
+#file_handler_1.setFormatter(
+     #logging.Formatter('1[%(asctime)s] : 2[%(levelname)s] : 3[%(name)s] : 4[%(module)s]: 5[%(process)d]: 6[%(thread)d]: 7[%(message)s]'))
+#file_handler_2.setFormatter(
+ #    logging.Formatter('%(asctime)s : ******%(levelname)s******* : %(name)s :  %(message)s'))
+
+#logger.addHandler(file_handler_1)
+#logger.addHandler(file_handler_2)
+#logging.basicConfig(level=logging.INFO, format='%(asctime)s :: %(levelname)s :: %(message)s')
+#logging.info("Just like that!")
 # Create your views here.
+
 
 def register(request):
      if request.method == 'POST':
@@ -43,10 +57,12 @@ def register(request):
      else:
           return render(request, 'accounts/register.html')
      
+     
 
 
 
 def login(request):
+
      if request.method == 'POST':
           username       = request.POST['username']
           password       = request.POST['password']
@@ -55,19 +71,23 @@ def login(request):
 
           if user is not None:
                auth.login(request ,user)
-               logging.info (messages.success(request, ' you are now logged in'))
+               messages.success(request, ' you are now logged in')
+               logger.info(request)
                return redirect('dashboard')
           else:
                logging.info(messages.error(request, 'Invalid credentials'))
                return redirect('login')
      else:
+          
           return render(request, 'accounts\login.html')
+
      
 
 def logout(request):
      if request.method == 'POST':
           auth.logout(request)
-          logging.info(messages.success(request, 'You are now logged out'))
+          messages.success(request, 'You are now logged out')
+          logger.info(request)
           return redirect('index')
      else:
           return render(request, 'accounts\logout.html')
@@ -77,5 +97,6 @@ def dashboard(request):
      context = {
           'contacts':contacts,
      }
+     logger.info(request)
      
      return render(request, 'accounts\dashboard.html', context)

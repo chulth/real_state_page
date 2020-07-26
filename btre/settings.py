@@ -156,11 +156,11 @@ LOGGING = {
     'disable_existing_loggers': True,
     'formatters': {
         'standard': {
-            'format': '%(asctime)s [%(levelname)s] %(name)s: %(message)s'
+            'format': '1[%(asctime)s] : 2[%(levelname)s] : 3[%(name)s] : 4[%(module)s]: 5[%(process)d]: 6[%(thread)d]: 7[%(message)s]'
         },
         'console': {
-            'format': '%(asctime)s %(name)-12s %(levelname)-8s %(message)s',
-        },
+                'format': '1[%(asctime)s] : 2[%(levelname)s] : 3[%(name)s] : 4[%(module)s]: 5[%(process)d]: 6[%(thread)d]: 7[%(message)s]'
+            },
     },
     'handlers': {
         'default': {
@@ -172,7 +172,7 @@ LOGGING = {
             'formatter': 'standard',
         },
         'request_handler': {
-            'level': 'INFO',
+            'level': 'DEBUG',
             'class': 'logging.handlers.RotatingFileHandler',
             'filename': 'btre/logs/django_request.log',
             'maxBytes': 1024*1024*5,  # 5 MB
@@ -180,18 +180,20 @@ LOGGING = {
             'formatter': 'standard',
         },
         'console': {
-            'class': 'logging.StreamHandler',
+            'level': 'INFO',
+            'class': 'logging.handlers.RotatingFileHandler',
             'formatter': 'console',
+            'filename': 'btre/logs/txt_request.log',
         },
     },
     'loggers': {
         '': {
-            'handlers': ['default'],
+            'handlers': ['default', 'request_handler', 'console'],
             'level': 'INFO',
             'propagate': True
         },
         'django.request': {
-            'handlers': ['request_handler'],
+            'handlers': ['request_handler', 'console'],
             'level': 'INFO',
             'propagate': False
         },
